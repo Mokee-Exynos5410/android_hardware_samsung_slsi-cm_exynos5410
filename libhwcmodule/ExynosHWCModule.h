@@ -16,20 +16,15 @@
 
 #ifndef ANDROID_EXYNOS_HWC_MODULE_H_
 #define ANDROID_EXYNOS_HWC_MODULE_H_
-
 #include <hardware/hwcomposer.h>
-#include "fimd_fb.h"
+#include <linux/s3c-fb.h>
 
-#define VSYNC_DEV_PREFIX "/sys/devices/"
-#define VSYNC_DEV_MIDDLE ""
-#define VSYNC_DEV_NAME  "14400000.fimd_fb/vsync"
-
-#define FIMD_WORD_SIZE_BYTES   16
-#define FIMD_BURSTLEN   8
-#define FIMD_ADDED_BURSTLEN_BYTES     4
-#define FIMD_BW_OVERLAP_CHECK
+#define VSYNC_DEV_PREFIX "/sys/devices"
+#define VSYNC_DEV_MIDDLE "/platform/exynos-sysmmu.11"
+#define VSYNC_DEV_NAME  "/exynos5-fb.1/vsync"
 
 #define DUAL_VIDEO_OVERLAY_SUPPORT
+#define EXYNOS_SUPPORT_BGRX_8888
 
 /* Framebuffer API specific defines (decon_fb.h) */
 #define WIN_STATE_DISABLED  s3c_fb_win_config::S3C_FB_WIN_STATE_DISABLED
@@ -77,31 +72,6 @@ inline s3c_fb_pixel_format halFormatToSocFormat(int format)
             return S3C_FB_PIXEL_FORMAT_MAX;
     }
 }
-
-#ifdef FIMD_BW_OVERLAP_CHECK
-const size_t MAX_NUM_FIMD_DMA_CH = 2;
-const uint32_t FIMD_DMA_CH_IDX[] = {0, 1, 1, 1, 0};
-const uint32_t FIMD_DMA_CH_BW_SET1[MAX_NUM_FIMD_DMA_CH] = {1920 * 1080 *2, 1920 * 1080 *2};
-const uint32_t FIMD_DMA_CH_BW_SET2[MAX_NUM_FIMD_DMA_CH] = {2560 * 1600, 2560 * 1600 *2};
-const uint32_t FIMD_DMA_CH_OVERLAP_CNT_SET1[MAX_NUM_FIMD_DMA_CH] = {2, 2};
-const uint32_t FIMD_DMA_CH_OVERLAP_CNT_SET2[MAX_NUM_FIMD_DMA_CH] = {1, 2};
-
-inline void fimd_bw_overlap_limits_init(int xres, int yres,
-            uint32_t *fimd_dma_chan_max_bw, uint32_t *fimd_dma_chan_max_overlap_cnt)
-{
-    if (xres * yres > 1920 * 1080) {
-        for (size_t i = 0; i < MAX_NUM_FIMD_DMA_CH; i++) {
-            fimd_dma_chan_max_bw[i] = FIMD_DMA_CH_BW_SET2[i];
-            fimd_dma_chan_max_overlap_cnt[i] = FIMD_DMA_CH_OVERLAP_CNT_SET2[i];
-        }
-    } else {
-        for (size_t i = 0; i < MAX_NUM_FIMD_DMA_CH; i++) {
-            fimd_dma_chan_max_bw[i] = FIMD_DMA_CH_BW_SET1[i];
-            fimd_dma_chan_max_overlap_cnt[i] = FIMD_DMA_CH_OVERLAP_CNT_SET1[i];
-        }
-    }
-}
-#endif
 
 const size_t GSC_DST_W_ALIGNMENT_RGB888 = 16;
 const size_t GSC_DST_CROP_W_ALIGNMENT_RGB888 = 1;

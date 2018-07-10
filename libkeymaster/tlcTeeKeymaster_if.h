@@ -40,7 +40,6 @@ extern "C" {
 #include <stdbool.h>
 #include <string.h>
 
-
 /**
  * Key sizes
  */

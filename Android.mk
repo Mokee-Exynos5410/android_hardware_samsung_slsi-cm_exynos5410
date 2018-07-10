@@ -14,30 +14,28 @@
 # limitations under the License.
 #
 
-ifeq ($(TARGET_BOARD_PLATFORM), exynos5)
-ifeq ($(TARGET_SLSI_VARIANT), cm)
-ifeq ($(TARGET_SOC), exynos5410)
+ifeq ($(TARGET_SOC),exynos5410)
+ifeq ($(TARGET_SLSI_VARIANT),cm)
+
 exynos5410_dirs := \
-	mobicore \
-	gralloc \
 	libdisplaymodule \
-	libhwcutilsmodule \
 	libhdmimodule \
+	libhwcutilsmodule \
 	libhwjpeg \
-	libsecurepath 
+	libkeymaster \
+	libsecurepath \
+	mobicore
 
 ifeq ($(BOARD_USES_VIRTUAL_DISPLAY), true)
 exynos5410_dirs += \
 	libvirtualdisplaymodule
 endif
 
-ifeq ($(BOARD_USES_TRUST_KEYMASTER), true)
-exynos5410_dirs += \
-	libkeymaster
+ifeq ($(BOARD_USE_SOC_LIBCAMERA),true)
+exynos5410_dirs += libcamera
 endif
 
 include $(call all-named-subdir-makefiles,$(exynos5410_dirs))
 
-endif
 endif
 endif
